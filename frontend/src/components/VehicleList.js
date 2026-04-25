@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import vehicleAPI from '../services/vehicleAPI';
 import '../styles/VehicleList.css';
 
@@ -13,11 +13,7 @@ const VehicleList = () => {
   });
   const [searchQuery, setSearchQuery] = useState('');
 
-  useEffect(() => {
-    fetchVehicles();
-  }, []);
-
-  const fetchVehicles = async () => {
+  const fetchVehicles = useCallback(async () => {
     setLoading(true);
     try {
       const activeFilters = Object.fromEntries(
@@ -31,7 +27,11 @@ const VehicleList = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filters]);
+
+  useEffect(() => {
+    fetchVehicles();
+  }, [fetchVehicles]);
 
   const handleSearch = async (e) => {
     e.preventDefault();
